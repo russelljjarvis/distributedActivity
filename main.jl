@@ -35,13 +35,9 @@ include("runinitial.jl")
 include("runtrain.jl")
 include("runtest.jl")
 include("funMovAvg.jl")
-# include("funCorrTarg.jl")
-# include("funCorrDecomp.jl")
 include("funSample.jl")
 include("funRollingAvg.jl")
 include("runperformance.jl")
-# include("calcWeights.jl")
-# include("replaceWp.jl")
 
 dirNetwork = "data_network/"
 dirALM = "data_alm/"
