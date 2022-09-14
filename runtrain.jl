@@ -4,6 +4,8 @@ function runtrain(dirData,p,w0Index,w0Weights,nc0, stim, xtarg,
 
 # copy param
 nloop = copy(p.nloop) # train param
+#= Penalties that come updated inside p parameters when training is run =#
+    
 penlambda = copy(p.penlambda)
 penlamEE = copy(p.penlamEE)
 penlamIE = copy(p.penlamIE)
