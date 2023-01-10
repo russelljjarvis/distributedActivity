@@ -1,4 +1,5 @@
 using Distributions
+using ProgressMeter
 
 function runtest(p,w0Index,w0Weights,nc0,wpIndexOut,wpWeightOut,ncpOut,stim,ffwdRate,wpWeightFfwd)
 
@@ -8,11 +9,11 @@ penlambda = copy(p.penlambda)
 penmu = copy(p.penmu)
 fracTrained = copy(p.fracTrained)
 learn_every = copy(p.learn_every)
-stim_on = copy(p.stim_on)
-stim_off = copy(p.stim_off)
-train_time = copy(p.train_time)
+stim_on = floor(Int,copy(p.stim_on)/10.0)
+stim_off = floor(Int,copy(p.stim_off)/10.0)
+train_time = floor(Int,copy(p.train_time)/10.0)
 dt = copy(p.dt) # time param
-Nsteps = copy(p.Nsteps) 
+Nsteps = floor(Int,copy(p.Nsteps)/10.0) 
 Ncells = copy(p.Ncells) # network param
 Ne = copy(p.Ne)
 Ni = copy(p.Ni)
@@ -95,7 +96,11 @@ xebalcnt = zeros(learn_nsteps)
 xibalcnt = zeros(learn_nsteps)
 xplasticcnt = zeros(learn_nsteps)
 
-for ti=1:Nsteps
+
+#
+# Monday next week.
+#
+@showprogress for ti=1:Nsteps
     if mod(ti,Nsteps/100) == 1  #print percent complete
         print("\r",round(Int,100*ti/Nsteps))
     end
@@ -131,13 +136,20 @@ for ti=1:Nsteps
         if t > Int(stim_off) && t <= Int(train_time) && mod(t,1.0) == 0
             xtotal[:,ci], xtotalcnt = funRollingAvg(p,t,wid,widInc,learn_nsteps,xtotal[:,ci],xtotalcnt,synInput,ci)
         end
-        
+        #@show(bias)
+        #@show(ci)        
         # external input
         if t > Int(stim_on) && t < Int(stim_off)
-            bias[ci] = mu[ci] + stim[ti-Int(stim_on/dt),ci]
+            bias[ci] = mu[ci] + stim[1][ti-Int(stim_on/dt),ci]
+
+            #@show(stim[ti-Int(stim_on/dt),ci])
+            bias[ci] = mu[ci] + stim[2][ti-Int(stim_on/dt),ci]
         else
             bias[ci] = mu[ci]
         end
+        #@show(ci)
+        #@show(size(stim[1]))
+        #@show(size(stim[2]))
 
         #not in refractory period
         if t > (lastSpike[ci] + refrac)  
@@ -168,25 +180,34 @@ for ti=1:Nsteps
     end #end loop over neurons
 
     # External input to trained excitatory neurons
+
+    #@show(ffwdRate)
     if ti > Int(stim_off/dt)
         tidx = ti - Int(stim_off/dt)
         for ci = 1:p.Lffwd
             # # if training, filter the spikes
-            # s[ci] += -dt*s[ci]/taudecay_plastic + ffwdSpikePrev[ci]/taudecay_plastic
+            #s[ci] += -dt*s[ci]/taudecay_plastic + ffwdSpikePrev[ci]/taudecay_plastic
 
             # if Poisson neuron spiked
-            if rndFfwd[ci] < ffwdRate[tidx,ci]/(1000/p.dt)
-                # ffwdSpike[ci] = 1.
+            #@show(ffwdRate[1][tidx,ci])
+            #@show(rndFfwd[ci])
+
+            if rndFfwd[ci] < ffwdRate[1][tidx,ci]/(1000/p.dt)
+                #fwdSpike[ci] = 1.
                 ns_ffwd[ci] = ns_ffwd[ci]+1
                 if ns_ffwd[ci] <= maxTimes
                     times_ffwd[ci,ns_ffwd[ci]] = t
                 end
-                for j = 1:Ne
-                    forwardInputsP[j] += wpWeightFfwd[j,ci]
-                end #end loop over synaptic projections
+                #@show(wpWeightFfwd)
+                #@show(size(wpWeightFfwd))
+                
+                #for j = 1:Ne
+                #    forwardInputsP[j] += wpWeightFfwd[j,ci]
+                #end #end loop over synaptic projections
             end #end if spiked
         end #end loop over ffwd neurons
     end #end ffwd input
+    
 
     forwardInputsEPrev = copy(forwardInputsE)
     forwardInputsIPrev = copy(forwardInputsI)

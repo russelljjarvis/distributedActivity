@@ -1,7 +1,7 @@
 dt = 0.1 #simulation timestep (ms)
 
 # training variables
-nloop          = 500; #300
+nloop          = 1#500; #300
 penlambda      = 0.05; # 0.1 or 0.5 
 penlamEE       = 0.04; # 3.0
 penlamEI       = 0.04; # 3.0
@@ -14,9 +14,9 @@ learn_every    = 20.0
 learn_step     = Int(learn_every/dt)
 
 # innate, train, test time
-train_duration = 2000.;
-stim_on        = 800.;
-stim_off       = 1000.;
+train_duration = 2000.0/10.0;
+stim_on        = 800.0/10.0;
+stim_off       = 1000.0/10.0;
 train_time     = stim_off + train_duration;
 
 Nsteps = Int(train_time/dt;)
@@ -34,14 +34,38 @@ tauedecay = 3
 tauidecay = 3
 taudecay_plastic = 150.0
 
-# network size      
-Ncells = 5000;
-Ne = Int(Ncells*0.5);
-Ni = Int(Ncells*0.5);
 
+#ccu = Dict("23E"=>20683, "23I"=>5834,
+#"4E"=>21915, "4I"=>5479,
+#"5E"=>4850, "5I"=>1065,
+#"6E"=>14395, "6I"=>2948)
+#Ncells = sum([i for i in values(ccu) ])
+#Ncells = Int(Ncells+1)
+
+
+ccu = Dict("23E"=>20683, "23I"=>5834,
+            "4E"=>21915, "4I"=>5479,
+            "5E"=>4850, "5I"=>1065,
+            "6E"=>14395, "6I"=>2948)
+ccu = Dict((k,ceil(Int64,v/35.0)) for (k,v) in pairs(ccu))
+
+#Ncells = sum([i for i in values(ccu)])#max([max(i[:]) for i in values(cumulative)])
+Ncells = sum([i for i in values(ccu)])+1#max([max(i[:]) for i in values(cumulative)])
+
+#Linh = sum([i["I"] for i in values(ccu) ])
+#Ncells =  Lexc+Linh
+# network size      
+#Ncells = 10000;
+
+Ne = Int(floor(Int,Ncells)*0.5);
+Ni = Int(floor(Int,Ncells)*0.5);
+@show(Ncells)
+@show(Ne)
+@show(Ni)
 # connectivity 
 K = 500
-pree = K/Ne
+pree = Ncells
+#pree = K/Ne
 prei = K/Ne
 prie = K/Ne
 prii = K/Ne

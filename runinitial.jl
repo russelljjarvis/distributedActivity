@@ -1,7 +1,9 @@
+using ProgressMeter
+
 function runinitial(p,w0Index,w0Weights,nc0)
 
     # copy param
-    train_time = 20000.0
+    train_time = 20000
     # train_time = copy(p.train_time)    
     dt = copy(p.dt)
     Nsteps = Int(train_time / dt) # network param
@@ -59,7 +61,7 @@ function runinitial(p,w0Index,w0Weights,nc0)
     r = zeros(Ncells)
     bias = zeros(Ncells)
     
-    for ti=1:Nsteps
+    @showprogress for ti=1:Nsteps/500.0
         if mod(ti,Nsteps/100) == 1  #print percent complete
             print("\r",round(Int,100*ti/Nsteps))
         end
@@ -103,12 +105,18 @@ function runinitial(p,w0Index,w0Weights,nc0)
                     if ns[ci] <= maxTimes
                         times[ci,ns[ci]] = t
                     end
+
+
                     for j = 1:nc0[ci]
+
+    
                         if w0Weights[j,ci] > 0  #E synapse
                             forwardInputsE[w0Index[j,ci]] += w0Weights[j,ci]
                         elseif w0Weights[j,ci] < 0  #I synapse
                             forwardInputsI[w0Index[j,ci]] += w0Weights[j,ci]
+
                         end
+
                     end #end loop over synaptic projections
                 end #end if(spike occurred)
             end #end not in refractory period

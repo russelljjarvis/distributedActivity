@@ -1,8 +1,9 @@
+using SparseArrays
 function genPlasticWeights(p, w0Index, nc0, ns0, matchedCells)
-
+    #@show(w0Index)
     # rearrange initial weights
     w0 = Dict{Int,Array{Int,1}}()
-    for i = 1:p.Ncells
+    for i = 0:p.Ncells
         w0[i] = []
     end
     for preCell = 1:p.Ncells
@@ -16,8 +17,8 @@ function genPlasticWeights(p, w0Index, nc0, ns0, matchedCells)
     inh_selected = collect(p.Ne+1:p.Ncells)
     
     # define weights_plastic    
-    wpWeightIn = zeros(p.Ncells,round(Int,p.Lexc+p.Linh))
-    wpIndexIn = zeros(p.Ncells,round(Int,p.Lexc+p.Linh))
+    wpWeightIn = spzeros(p.Ncells,p.Ncells)#round(Int,p.Lexc+p.Linh))
+    wpIndexIn = spzeros(p.Ncells,p.Ncells)#round(Int,p.Lexc+p.Linh))
     ncpIn = zeros(Int,p.Ncells)
 
     # random plastic weights

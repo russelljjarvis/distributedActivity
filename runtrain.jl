@@ -1,3 +1,5 @@
+using ProgressMeter
+
 function runtrain(dirData,p,w0Index,w0Weights,nc0, stim, xtarg,
     wpWeightFfwd, wpIndexIn, wpIndexOut, wpIndexConvert, wpWeightIn, wpWeightOut, ncpIn, ncpOut, 
     almOrd, matchedCells, ffwdRate)
@@ -146,7 +148,7 @@ for iloop =1:nloop
         v = rand(Ncells)
         learn_seq = 1
 
-        for ti=1:Nsteps
+        @showprogress for ti=1:Nsteps
             t = dt*ti;
             forwardInputsE .= 0.0;
             forwardInputsI .= 0.0;

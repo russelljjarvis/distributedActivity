@@ -9,10 +9,11 @@ function runperformance(p,w0Index,w0Weights,nc0,wpIndexOut,wpWeightOut,ncpOut,st
     for nid = 1:length(almOrd)
         ci_alm = almOrd[nid] # alm neuron
         ci = matchedCells[nid] # model neuron
-
-        xtarg_slice = @view xtarg[1:tlen,ci_alm]
+        #@show(xtarg)
+        xtarg_slice = @view xtarg[1][1:tlen,ci_alm]
         xtotal_slice = @view xtotal[:,ci]
         pcor[nid] = cor(xtarg_slice, xtotal_slice)
+        #@show(pcor[nid])
     end
 
     pcor_mean = mean(pcor)
