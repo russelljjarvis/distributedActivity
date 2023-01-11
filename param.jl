@@ -1,7 +1,7 @@
 dt = 0.1 #simulation timestep (ms)
 
 # training variables
-nloop          = 1#500; #300
+nloop          = 3#500; #300
 penlambda      = 0.05; # 0.1 or 0.5 
 penlamEE       = 0.04; # 3.0
 penlamEI       = 0.04; # 3.0
@@ -94,6 +94,7 @@ muimax = jx
 # wpscale = sqrtK * 0.5
 
 L = round(Int,sqrt(K))*L_list[ll] # number of exc/inh plastic weights per neuron
+#L *=10
 Lffwd = Lffwd_list[oo] #round(Int, L/2) # feedfoward L/2
 Lexc = L # excitatory L
 Linh = L # inhibitory L
