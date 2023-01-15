@@ -108,7 +108,11 @@ for ci=1:p.Ncells
     push!(xs, times[ci]*100)
     push!(ys, ci)
 end
-scatter(xs, ys)
+nt = isempty(x) ? 0 : maximum(y)
+ms =4.45*size[2]/(nt+5)
+#scatter(xs, ys)
+Plots.scatter!(xs,ys;label="SpikeTrain",markershape=:vline,markersize=ms,markerstrokewidth = 0.2)
+
 savefig("Better_Spike_Rastery.png")
 
 

@@ -100,7 +100,7 @@ function runinitial(p,w0Index,w0Weights,nc0)
     
             #bias[ci] = mu[ci]
             if t > Int(stim_on) && t < Int(stim_off) 
-                bias[ci] = mu[ci] + stim[ti-Int(stim_on/dt),ci]*20.0
+                bias[ci] = mu[ci] + stim[ti-Int(stim_on/dt),ci]*200.0
             else
                 bias[ci] = mu[ci]
             end
