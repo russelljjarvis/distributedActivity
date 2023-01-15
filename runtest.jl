@@ -165,15 +165,21 @@ xplasticcnt = zeros(learn_nsteps)
                 for j = 1:nc0[ci]
                     wgt = w0Weights[j,ci]
                     cell = w0Index[j,ci]
-                    if wgt > 0  #E synapse
-                        forwardInputsE[cell] += wgt
-                    elseif wgt < 0  #I synapse
-                        forwardInputsI[cell] += wgt
+                    if cell != 0
+                        if wgt > 0  #E synapse
+                            forwardInputsE[cell] += wgt
+                        elseif wgt < 0  #I synapse
+                            forwardInputsI[cell] += wgt
+                        end
                     end
                 end #end loop over synaptic projections
                 for j = 1:ncpOut[ci]
+
                     cell = Int(wpIndexOut[j,ci])
-                    forwardInputsP[cell] += wpWeightOut[j,ci]
+                    if cell != 0
+
+                        forwardInputsP[cell] += wpWeightOut[j,ci]
+                    end
                 end
             end #end if(spike occurred)
         end #end not in refractory period

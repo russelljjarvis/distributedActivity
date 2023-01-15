@@ -4,7 +4,7 @@ function genStim(p)
 timeSteps = Int((p.stim_off - p.stim_on)/p.dt)
 stim = zeros(timeSteps,p.Ncells)
 mu = 0.0;
-b = 1/20;
+b = 1/10;
 sig = 0.2; #0.1;
 for ci = 1:Ncells
     for i = 1:timeSteps-1

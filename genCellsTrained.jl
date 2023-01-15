@@ -1,5 +1,5 @@
-matplotlib = pyimport("matplotlib")
-Line2D = matplotlib.lines.Line2D
+#matplotlib = pyimport("matplotlib")
+#Line2D = matplotlib.lines.Line2D
 
 function genCellsTrained(targetRate, ns)
 

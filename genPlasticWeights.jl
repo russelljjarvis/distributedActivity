@@ -1,17 +1,6 @@
 using SparseArrays
-function genPlasticWeights(p, w0Index, nc0, ns0, matchedCells)
-    #@show(w0Index)
-    # rearrange initial weights
-    w0 = Dict{Int,Array{Int,1}}()
-    for i = 1:p.Ncells
-        w0[i] = []
-    end
-    for preCell = 1:p.Ncells
-        for i = 1:nc0[preCell]
-            postCell = w0Index[i,preCell]+1
-            push!(w0[postCell],preCell)
-        end
-    end
+function genPlasticWeights(p, nc0, ns0, matchedCells)
+
 
     exc_selected = collect(1:p.Ncells)
     inh_selected = collect(1:p.Ncells)
@@ -19,8 +8,8 @@ function genPlasticWeights(p, w0Index, nc0, ns0, matchedCells)
     # define weights_plastic    
     wpWeightIn = spzeros(p.Ncells,round(Int,2*p.L))
     wpIndexIn = spzeros(p.Ncells,round(Int,2*p.L))
-    @show(length(exc_selected))
-    @show(p.L)
+    #@show(length(exc_selected))
+    #@show(p.L)
 
     indE = sort(shuffle(exc_selected)[1:p.L])
     indI = sort(shuffle(inh_selected)[1:p.L])
@@ -40,7 +29,6 @@ function genPlasticWeights(p, w0Index, nc0, ns0, matchedCells)
         wpIndexIn[postCell,:] = ind
         ncpIn[postCell] = length(ind)
     end
-    #=
     # trained exc neurons form a cluster
     for ii = 1:length(matchedCells)
         # neuron to be trained
@@ -61,9 +49,9 @@ function genPlasticWeights(p, w0Index, nc0, ns0, matchedCells)
 
         # (2) excitatory: select random but trained neurons as presynaptic neurons
         #     inhibitory: select random presynaptic neurons
-        #matchedCells_noautapse = filter(x->x!=postCell, matchedCells)
-        indE = sort(shuffle(matchedCells_noautapse)[1:ceil(Int,p.L)-1])
-        indI = sort(shuffle(inh_selected)[1:ceil(Int,p.L)])
+        matchedCells_noautapse = filter(x->x!=postCell, matchedCells)
+        indE = sort(shuffle(matchedCells_noautapse)[1:p.L])
+        indI = sort(shuffle(inh_selected)[1:p.L])
 
         # updated wpIndexIn for postcell in matchedCells
         ind = [indE; indI]
@@ -86,7 +74,6 @@ function genPlasticWeights(p, w0Index, nc0, ns0, matchedCells)
             wpWeightIn[postCell,:] = [wpie; wpii]
         end
     end
-    =#
     # define feedforward weights to excitatory neurons
     # wpWeightFfwd = randn(p.Ne, p.Lffwd) * p.wpffwd
     wpWeightFfwd = Vector{Array{Float64,2}}(); 
